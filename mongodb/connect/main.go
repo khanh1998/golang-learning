@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,10 +17,18 @@ type TodoItem struct {
 	id string
 }
 
-const URI = "mongodb+srv://user1:2rlUUvkwrLSAZ217@cluster.v5cg7.azure.mongodb.net/todolist?retryWrites=true&w=majority"
+func getMongodbURI() string {
+	var myEnv map[string]string
 
+	myEnv, err := godotenv.Read()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return myEnv["MONGODB_URI"]
+}
 func main() {
-	client, err := mongo.NewClient(options.Client().ApplyURI(URI))
+	mongodb_uri := getMongodbURI()
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongodb_uri))
 	if err != nil {
 		log.Fatal(err)
 	}
